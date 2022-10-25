@@ -1,12 +1,13 @@
-import { Controller, Get } from '@nestjs/common';
-import { AppService } from './app.service';
+import { Controller, Get, Inject } from '@nestjs/common';
+import { ConfigType } from '@nestjs/config';
+import dataBaseConfig from 'config/dataBase.config';
 
 @Controller()
 export class AppController {
-  constructor(private readonly appService: AppService) {}
+  constructor(@Inject(dataBaseConfig.KEY) private readonly dataBase:ConfigType<typeof dataBaseConfig>) {}
 
   @Get()
-  getHello(): string {
-    return this.appService.getHello();
+  getHello(): any {
+    return this.dataBase 
   }
 }
