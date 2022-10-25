@@ -5,6 +5,10 @@ import { ConfigModule, ConfigService } from '@nestjs/config'
 import appConfig from '../config/index'
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserModule } from './controller/user/user.module';
+import { GoodsModule } from './controller/goods/goods.module';
+import { CategoryModule } from './controller/category/category.module';
+import { CartModule } from './controller/cart/cart.module';
+import { OrderModule } from './controller/order/order.module';
 
 @Module({ 
   imports: [
@@ -15,9 +19,12 @@ import { UserModule } from './controller/user/user.module';
     TypeOrmModule.forRootAsync({//数据库配置
         useFactory: (config: ConfigService) => config.get('dataBase'),
         inject: [ConfigService],  
-        extraProviders:[UserModule]
+        extraProviders:[UserModule,GoodsModule,CategoryModule,CartModule,OrderModule]
       },
       ),
+    CategoryModule,
+    CartModule,
+    OrderModule,
   ],
   controllers: [AppController],
   providers: [AppService],
