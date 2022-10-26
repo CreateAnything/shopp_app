@@ -1,8 +1,5 @@
 import { BaseEntity, Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 
-enum StatusType{
-
-}
 @Entity('category')
 export class Category extends BaseEntity{
     @PrimaryGeneratedColumn('uuid',{comment:'类型编号'})
