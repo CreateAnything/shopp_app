@@ -14,8 +14,9 @@ export class CreateUserDto {
 	readonly avatar?: string
 
 	@ApiPropertyOptional({ description: '用户电话' })
+	@IsNotEmpty({ message: '电话号码不能为空' })
 	@MaxLength(20, { message: '手机位数不能超过12位' })
-	readonly phone?: string
+	readonly phone: string
 
 	@ApiPropertyOptional({ description: '重置密码的问题' })
 	readonly question: string

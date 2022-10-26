@@ -21,7 +21,7 @@ import { UserController } from './controller/user/user.controller'
 import { GoodsController } from './controller/goods/goods.controller'
 import { OrderController } from './controller/order/order.controller'
 import { CategoryController } from './controller/category/category.controller'
-import appConfig from '../config/index'
+import appConfig from 'config/index'
 
 @Module({
 	imports: [
@@ -33,31 +33,18 @@ import appConfig from '../config/index'
 			//数据库配置
 			useFactory: (config: ConfigService) => config.get('dataBase'),
 			inject: [ConfigService],
-			extraProviders: [
-				UserModule,
-				GoodsModule,
-				CategoryModule,
-				CartModule,
-				OrderModule,
-				AddressModule,
-				PayinfoModule,
-				OrderitemModule,
-				AuthModule,
-			],
 		}),
+		UserModule,
+		GoodsModule,
+		CategoryModule,
+		CartModule,
+		OrderModule,
+		AddressModule,
+		PayinfoModule,
+		OrderitemModule,
+		AuthModule,
 	],
-	controllers: [
-		AppController,
-		AddressController,
-		PayinfoController,
-		OrderitemController,
-		AuthController,
-		CartController,
-		UserController,
-		GoodsController,
-		OrderController,
-		CategoryController,
-	],
+	controllers: [AppController],
 	providers: [AppService],
 })
 export class AppModule {}
