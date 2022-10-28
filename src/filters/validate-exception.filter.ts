@@ -4,7 +4,7 @@ import {
 	Catch,
 	ExceptionFilter,
 	HttpException,
-	HttpStatus,
+	HttpStatus
 } from '@nestjs/common'
 import { Request, Response } from 'express'
 import {
@@ -12,7 +12,7 @@ import {
 	BackErrorResponse,
 	ErrorMessage,
 	MyHttpException,
-	HttpResponseType,
+	HttpResponseType
 } from './types'
 @Catch(HttpException)
 export class ValidateExceptionFilter<T> implements ExceptionFilter {
@@ -32,7 +32,7 @@ export class ValidateExceptionFilter<T> implements ExceptionFilter {
 			path: request.url,
 			success: false,
 			timestamp: new Date().toISOString(),
-			message: HttpResponse.message,
+			message: HttpResponse.message
 		}
 		if (exception instanceof BadRequestException) {
 			//如果是参数异常的情况
@@ -41,7 +41,7 @@ export class ValidateExceptionFilter<T> implements ExceptionFilter {
 				const errInfo = error.split(':')
 				return {
 					field: errInfo[0],
-					message: errInfo[1],
+					message: errInfo[1]
 				} as unknown as ErrorMessage
 			})
 			errorResponse.code = HttpStatus.UNPROCESSABLE_ENTITY

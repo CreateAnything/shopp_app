@@ -3,5 +3,5 @@ import { CreateUserDto } from './register.dto'
 
 export class LoginDto extends PickType(CreateUserDto, [
 	'phone',
-	'password',
+	'password'
 ] as const) {}

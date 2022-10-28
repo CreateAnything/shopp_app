@@ -1,16 +1,16 @@
 import { Controller, Get, Inject } from '@nestjs/common'
 import { ConfigType } from '@nestjs/config'
-import dataBaseConfig from 'config/dataBase.config'
+import ormConfig from '@/config/orm.config'
 
 @Controller()
 export class AppController {
 	constructor(
-		@Inject(dataBaseConfig.KEY)
-		private readonly dataBase: ConfigType<typeof dataBaseConfig>,
+		@Inject(ormConfig.KEY)
+		private readonly dataBase: ConfigType<typeof ormConfig>
 	) {}
 
 	@Get()
 	getHello(): any {
-		return this.dataBase
+		return '去你妈的'
 	}
 }

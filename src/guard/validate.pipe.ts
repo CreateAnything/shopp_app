@@ -10,11 +10,11 @@ export class ValidatePipe extends ValidationPipe {
 	//重写错误类
 	protected mapChildrenToValidationErrors(
 		error: ValidationError,
-		parentPath?: string,
+		parentPath?: string
 	): ValidationError[] {
 		const errors: ValidationError[] = super.mapChildrenToValidationErrors(
 			error,
-			parentPath,
+			parentPath
 		)
 		errors.map(error => {
 			for (const key in error.constraints) {

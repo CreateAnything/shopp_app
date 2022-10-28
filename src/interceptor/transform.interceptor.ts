@@ -2,7 +2,7 @@ import {
 	CallHandler,
 	ExecutionContext,
 	Injectable,
-	NestInterceptor,
+	NestInterceptor
 } from '@nestjs/common'
 import { Request } from 'express'
 import { map, Observable } from 'rxjs'
@@ -11,6 +11,7 @@ export interface ReponseType<T = any> {
 	path: string
 	success: true
 	timestamp: string
+	message: string
 	data: T
 }
 type ResultType = Observable<ReponseType> | Promise<Observable<ReponseType>>
@@ -26,9 +27,10 @@ export class TransformInterceptor implements NestInterceptor {
 					path: request.url,
 					timestamp: new Date().toISOString(),
 					success: true,
-					data: data ? data : null,
+					message: '请求成功',
+					data: data ? data : null
 				}
-			}),
+			})
 		)
 	}
 }

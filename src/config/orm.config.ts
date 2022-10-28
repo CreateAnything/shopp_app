@@ -1,5 +1,6 @@
 import { registerAs } from '@nestjs/config'
-export default registerAs('dataBase', () => ({
+import { TypeOrmModuleOptions } from '@nestjs/typeorm'
+export default registerAs<TypeOrmModuleOptions>('dataBase', () => ({
 	type: 'mysql',
 	host: process.env.HOST,
 	port: parseInt(process.env.PORT),
@@ -7,6 +8,5 @@ export default registerAs('dataBase', () => ({
 	password: process.env.PASS_WORD,
 	database: process.env.DATA_BASE,
 	synchronize: true,
-	autoLoadEntities: true,
-	entities: [__dirname + '/**/*.entity{.ts,.js}'],
+	entities: [__dirname + '/../**/*.entity.js']
 }))

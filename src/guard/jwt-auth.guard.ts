@@ -19,8 +19,9 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
 	}
 	handleRequest(err: object, user: any, info: object) {
 		if (user) return user
-		let infoErr: InfoErrType = JSON.parse(JSON.stringify(info))
-		if (infoErr.message === 'jwt expired') {
+		if (!info) throw new UnauthorizedException(AuthErrCode.UnauthorizedToken)
+		const infoErr = JSON.parse(JSON.stringify(info)) as InfoErrType
+		if (infoErr.name === 'TokenExpiredError') {
 			throw new HttpException(AuthErrCode.AuthExpired, HttpStatus.UNAUTHORIZED)
 		}
 		throw new UnauthorizedException(AuthErrCode.UnauthorizedToken)

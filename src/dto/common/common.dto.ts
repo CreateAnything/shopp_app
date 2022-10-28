@@ -12,4 +12,7 @@ export class BaseSuccessDto {
 
 	@ApiProperty({ description: '请求时间戳' })
 	timestamp: string
+
+	@ApiProperty({ description: '请求结果信息', default: '请求成功' })
+	message: string
 }
