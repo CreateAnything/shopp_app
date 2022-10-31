@@ -1,4 +1,4 @@
-import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
+import { ApiProperty, ApiPropertyOptional, PickType } from '@nestjs/swagger'
 import { IsNotEmpty, MaxLength } from 'class-validator'
 export class CreateUserDto {
 	@ApiProperty({ description: '用户账号' })
@@ -23,3 +23,8 @@ export class CreateUserDto {
 	@ApiPropertyOptional({ description: '重置密码的答案' })
 	answer: string
 }
+
+export class LoginDto extends PickType(CreateUserDto, [
+	'phone',
+	'password'
+] as const) {}

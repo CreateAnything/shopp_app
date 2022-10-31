@@ -23,7 +23,13 @@ async function bootstrap() {
 	SwaggerModule.setup('Api', app, document)
 	app.useGlobalInterceptors(new TransformInterceptor()) //使用全局拦截器统一返回请求结果
 	app.useGlobalFilters(new ValidateExceptionFilter()) //全局错误过滤器
-	app.useGlobalPipes(new ValidatePipe()) //使用全局管道统一格式化参数错误信息
+	app.useGlobalPipes(
+		new ValidatePipe({
+			whitelist: true,
+			transform: true,
+			forbidNonWhitelisted: true
+		})
+	) //使用全局管道统一格式化参数错误信息
 	await app.listen(process.env.APP_PORT)
 	console.log(`接口文档运行在http://localhost:${process.env.APP_PORT}/Api`)
 }

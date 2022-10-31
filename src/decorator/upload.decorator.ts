@@ -4,8 +4,14 @@ import {
 	MethodNotAllowedException,
 	UseInterceptors
 } from '@nestjs/common'
-import { FileInterceptor } from '@nestjs/platform-express'
-import { MulterOptions } from '@nestjs/platform-express/multer/interfaces/multer-options.interface'
+import {
+	FileFieldsInterceptor,
+	FileInterceptor
+} from '@nestjs/platform-express'
+import {
+	MulterField,
+	MulterOptions
+} from '@nestjs/platform-express/multer/interfaces/multer-options.interface'
 export function UploadFilter(type: string[]) {
 	return (
 		_req: any,
@@ -24,14 +30,34 @@ function Upload(field: string, options?: MulterOptions) {
 	return applyDecorators(UseInterceptors(FileInterceptor(myField, options)))
 }
 
-export function ImageUpload(filed = 'file') {
+function UploadMore(maxCount: number, field?: string, options?: MulterOptions) {
+	const myField = field || 'file'
+	const multerField: MulterField[] = [
+		{
+			name: myField,
+			maxCount: maxCount
+		}
+	]
+	return applyDecorators(
+		UseInterceptors(FileFieldsInterceptor(multerField, options))
+	)
+}
+
+export function ImageUpload(filed?: string) {
 	return Upload(filed, {
 		limits: { fieldSize: Math.pow(1024, 2) * 3 },
 		fileFilter: UploadFilter(['image'])
 	})
 }
 
-export function UploadFile(type: string[], field: string = 'field') {
+export function ImageMoreUpload(maxCount?: number, field?: string) {
+	const count = maxCount || 10
+	return UploadMore(count, field, {
+		fileFilter: UploadFilter(['image'])
+	})
+}
+
+export function UploadFile(type: string[], field: string = 'file') {
 	return Upload(field, {
 		fileFilter: UploadFilter(type)
 	})

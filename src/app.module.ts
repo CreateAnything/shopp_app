@@ -11,7 +11,8 @@ import { OrderModule } from './controller/order/order.module'
 import { OrderitemModule } from './controller/orderitem/orderitem.module'
 import { PayinfoModule } from './controller/payinfo/payinfo.module'
 import { UserModule } from './controller/user/user.module'
-import { UploadModule } from './controller/upload/upload.module';
+import { UploadModule } from './controller/upload/upload.module'
+import { CategoryModule } from './controller/category/category.module'
 
 @Module({
 	imports: [
@@ -33,7 +34,8 @@ import { UploadModule } from './controller/upload/upload.module';
 		OrderitemModule,
 		PayinfoModule,
 		UserModule,
-		UploadModule
+		UploadModule,
+		CategoryModule
 	],
 	controllers: [AppController],
 	providers: [AppService]

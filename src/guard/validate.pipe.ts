@@ -1,10 +1,13 @@
-import { Injectable, ValidationPipe } from '@nestjs/common'
-import { ValidationError, ValidatorOptions } from 'class-validator'
+import {
+	Injectable,
+	ValidationPipe,
+	ValidationPipeOptions
+} from '@nestjs/common'
+import { ValidationError } from 'class-validator'
 
 @Injectable()
 export class ValidatePipe extends ValidationPipe {
-	//基础class-validator这个类进行扩展
-	constructor(validatorOptions?: ValidatorOptions) {
+	constructor(validatorOptions?: ValidationPipeOptions) {
 		super(validatorOptions)
 	}
 	//重写错误类
@@ -18,6 +21,8 @@ export class ValidatePipe extends ValidationPipe {
 		)
 		errors.map(error => {
 			for (const key in error.constraints) {
+				if (key === 'whitelistValidation')
+					error.constraints[key] = `属性${error.property}未定义`
 				error.constraints[key] = error.property + ':' + error.constraints[key]
 			}
 		})

@@ -1,13 +1,12 @@
-import { CreateUserDto } from '@/dto/request/auth/register.dto'
 import { User } from '@/entities/user.entity'
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common'
 import { JwtService } from '@nestjs/jwt'
 import { InjectRepository } from '@nestjs/typeorm'
 import { Repository } from 'typeorm'
 import { AuthErrCode } from '@/code/index'
-import { LoginDto } from '@/dto/request/auth/login.dto'
+import { LoginDto, CreateUserDto } from './dto/request.dto'
 import { Encrypt, CompareHash } from '@/utils/index'
-import { LoginDataDto } from '@/dto/response/auth/login.dto'
+import { LoginDataDto } from './dto/response.dto'
 
 @Injectable()
 export class AuthService {
@@ -34,13 +33,12 @@ export class AuthService {
 	}
 
 	public async login(dto: LoginDto): Promise<LoginDataDto> {
-		const userRes = await this.userRepository.findOne({
-			select: ['userid', 'phone', 'avatar', 'username', 'password'],
+		const user = await this.userRepository.findOne({
+			select: ['userid', 'phone', 'avatar', 'password'],
 			where: { phone: dto.phone }
 		})
-		if (userRes) {
-			const { password, ...user } = userRes
-			if (!CompareHash(dto.password, password))
+		if (user) {
+			if (!CompareHash(dto.password, user.password))
 				throw new HttpException(AuthErrCode.PasswordErr, HttpStatus.BAD_REQUEST)
 			return {
 				...user,

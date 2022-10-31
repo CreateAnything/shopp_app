@@ -5,7 +5,7 @@ import {
 	Entity,
 	OneToMany,
 	PrimaryGeneratedColumn,
-	UpdateDateColumn,
+	UpdateDateColumn
 } from 'typeorm'
 import { Address } from './address.entity'
 import { Cart } from './cart.entity'
@@ -30,7 +30,7 @@ export class User extends BaseEntity {
 		type: 'varchar',
 		length: 100,
 		nullable: true,
-		comment: '重置密码的问题',
+		comment: '重置密码的问题'
 	})
 	question: string
 
@@ -38,14 +38,14 @@ export class User extends BaseEntity {
 		type: 'varchar',
 		length: 100,
 		nullable: true,
-		comment: '重置密码的答案',
+		comment: '重置密码的答案'
 	})
 	answer: string
 
-	@OneToMany(type => Cart, cart => cart.user) //一对多一个用户可以有多个购物车商品
+	@OneToMany(() => Cart, cart => cart.user) //一对多一个用户可以有多个购物车商品
 	carts: Cart[]
 
-	@OneToMany(type => Address, address => address.user)
+	@OneToMany(() => Address, address => address.user)
 	address: Address[]
 
 	@CreateDateColumn({ comment: '创建时间' }) //自动生成

@@ -1,6 +1,6 @@
-import { ApiProperty } from '@nestjs/swagger'
+import { ApiProperty, OmitType } from '@nestjs/swagger'
 
-export class BaseSuccessDto {
+export class BaseResponseDto {
 	@ApiProperty({ description: '响应状态码', default: 200 })
 	code: number
 
