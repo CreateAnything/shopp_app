@@ -1,5 +1,4 @@
-import { LoginDto, CreateUserDto } from './dto/request.dto'
-import { LoginDataDto, LoginResponseDto } from './dto/response.dto'
+import { DefaultResponse, ResponseOk } from '@/decorator/success.decorator'
 import {
 	Body,
 	ClassSerializerInterceptor,
@@ -7,16 +6,17 @@ import {
 	Post,
 	UseInterceptors
 } from '@nestjs/common'
-import { ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger'
+import { ApiOperation, ApiTags } from '@nestjs/swagger'
 import { AuthService } from './auth.service'
-import { BaseResponseDto } from '@/dto/common.dto'
+import { CreateUserDto, LoginDto } from './dto/request.dto'
+import { LoginDataDto } from './dto/response.dto'
 
 @Controller('auth')
 @ApiTags('Auth')
 export class AuthController {
 	constructor(private readonly authService: AuthService) {}
 	@Post('register')
-	@ApiOkResponse({ status: 200, type: BaseResponseDto }) //请求成功响应体
+	@DefaultResponse()
 	@ApiOperation({ summary: '注册用户' })
 	async userRegister(@Body() dto: CreateUserDto): Promise<void> {
 		await this.authService.register(dto)
@@ -24,7 +24,7 @@ export class AuthController {
 
 	@Post('login')
 	@UseInterceptors(ClassSerializerInterceptor)
-	@ApiOkResponse({ status: 200, type: LoginResponseDto }) //请求成功响应体
+	@ResponseOk({ model: LoginDataDto, type: 'object' })
 	@ApiOperation({ summary: '用户登录' })
 	async userLogin(@Body() dto: LoginDto): Promise<LoginDataDto> {
 		return await this.authService.login(dto)

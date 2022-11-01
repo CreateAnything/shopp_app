@@ -1,7 +1,6 @@
 import { Auth } from '@/decorator/auth.decorator'
-import { ResponseOk, DefaultResponse } from '@/decorator/success.decorator'
-import { BaseResponseDto } from '@/dto/common.dto'
-import { Category } from '@/entities/category.entity'
+import { DefaultResponse, ResponseOk } from '@/decorator/success.decorator'
+import { Role } from '@/entities/user.entity'
 import {
 	Body,
 	Controller,
@@ -11,7 +10,7 @@ import {
 	Patch,
 	Post
 } from '@nestjs/common'
-import { ApiExtraModels, ApiOperation, ApiTags } from '@nestjs/swagger'
+import { ApiOperation, ApiTags } from '@nestjs/swagger'
 import { CategoryService } from './category.service'
 import { CreareCategoryDto } from './dto/request.dto'
 import { CategoryResponseDto, CategoryTreeDto } from './dto/response.dto'
@@ -22,6 +21,7 @@ import { CategoryResponseDto, CategoryTreeDto } from './dto/response.dto'
 export class CategoryController {
 	constructor(private readonly categoryService: CategoryService) {}
 	@Post('add')
+	@Auth(Role.ADMIN)
 	@ApiOperation({ summary: '新增分类' })
 	@DefaultResponse()
 	async getCategory(
@@ -31,6 +31,7 @@ export class CategoryController {
 	}
 
 	@Patch('update:id')
+	@Auth(Role.ADMIN)
 	@ApiOperation({ summary: '更新分类' })
 	@DefaultResponse()
 	async updateCategory(
@@ -44,7 +45,6 @@ export class CategoryController {
 	@ApiOperation({ summary: '通过id获取分类' })
 	@ResponseOk({ model: CategoryResponseDto, type: 'object' })
 	async getCategoryByid(@Param('id') id: string): Promise<CategoryResponseDto> {
-		console.log(id)
 		return await this.categoryService.FINDBYID(id)
 	}
 
@@ -56,6 +56,7 @@ export class CategoryController {
 	}
 
 	@Delete('/list/:id')
+	@Auth(Role.ADMIN)
 	@ApiOperation({ summary: '根据id删除分类' })
 	@DefaultResponse()
 	async removeCategoryByid(@Param('id') id: string): Promise<void> {

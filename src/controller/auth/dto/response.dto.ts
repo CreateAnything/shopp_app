@@ -1,5 +1,4 @@
-import { ApiPropertyOptional, PartialType } from '@nestjs/swagger'
-import { BaseResponseDto } from '@/dto/common.dto'
+import { ApiPropertyOptional } from '@nestjs/swagger'
 
 export class LoginDataDto {
 	@ApiPropertyOptional({ description: '用户id' })
@@ -16,9 +15,4 @@ export class LoginDataDto {
 
 	@ApiPropertyOptional({ description: '头像' })
 	avatar: string
-}
-
-export class LoginResponseDto extends PartialType(BaseResponseDto) {
-	@ApiPropertyOptional({ description: '数据', type: LoginDataDto })
-	data: LoginDataDto
 }

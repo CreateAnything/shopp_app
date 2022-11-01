@@ -9,6 +9,11 @@ import {
 } from 'typeorm'
 import { Address } from './address.entity'
 import { Cart } from './cart.entity'
+export enum Role {
+	ADMIN = 'admin',
+	MERCHANT = 'merchant',
+	COMMON = 'common'
+}
 @Entity('user')
 export class User extends BaseEntity {
 	@PrimaryGeneratedColumn('uuid')
@@ -20,10 +25,13 @@ export class User extends BaseEntity {
 	@Column({ type: 'varchar', nullable: false, comment: '用户密码' })
 	password: string
 
+	@Column({ type: 'enum', enum: Role, default: Role.ADMIN })
+	role: Role
+
 	@Column({ type: 'varchar', comment: '用户头像', nullable: true })
 	avatar: string
 
-	@Column({ type: 'varchar', length: 20, nullable: true, comment: '用户电话' })
+	@Column({ length: 20, nullable: true, comment: '用户电话' })
 	phone: string
 
 	@Column({
