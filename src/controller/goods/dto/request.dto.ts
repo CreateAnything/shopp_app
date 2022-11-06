@@ -74,4 +74,15 @@ export class PagingGoodsDto extends PickType(PagingDto, [
 	@IsOptional()
 	@IsString()
 	name?: string
+
+	@ApiPropertyOptional({ description: '用户id' })
+	@IsOptional()
+	@IsString()
+	userid?: string
 }
+
+export class ExportGoodsDto extends PickType(PagingGoodsDto, [
+	'cateid',
+	'name',
+	'userid'
+]) {}

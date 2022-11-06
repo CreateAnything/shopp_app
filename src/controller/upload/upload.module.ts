@@ -1,10 +1,10 @@
+import { checkDirAndCreate } from '@/utils/index'
 import { Module } from '@nestjs/common'
 import { MulterModule } from '@nestjs/platform-express'
 import { diskStorage } from 'multer'
-import { checkDirAndCreate } from '@/utils/index'
+import { extname } from 'path'
 import { UploadController } from './upload.controller'
 import { UploadService } from './upload.service'
-import { extname } from 'path'
 type DestinationBack = (error: Error | null, destination: string) => void
 type FileNameBack = (error: Error | null, filename: string) => void
 @Module({

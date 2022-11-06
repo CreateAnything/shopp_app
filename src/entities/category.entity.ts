@@ -1,12 +1,14 @@
+import { Exclude } from 'class-transformer'
 import {
 	BaseEntity,
 	Column,
 	CreateDateColumn,
 	Entity,
+	OneToMany,
 	PrimaryGeneratedColumn,
 	UpdateDateColumn
 } from 'typeorm'
-import { Exclude } from 'class-transformer'
+import { Goods } from './goods.entity'
 @Entity('category')
 export class Category extends BaseEntity {
 	@PrimaryGeneratedColumn('uuid', { comment: '类型编号' })
@@ -14,6 +16,9 @@ export class Category extends BaseEntity {
 
 	@Column({ comment: '父类别编号,为0表示跟节点', default: 0 })
 	parentid: string
+
+	@OneToMany(() => Goods, goods => goods.category)
+	goods: Goods[]
 
 	@Column({ comment: '分类名称' })
 	name: string

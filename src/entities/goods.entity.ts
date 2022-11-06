@@ -3,9 +3,12 @@ import {
 	Column,
 	CreateDateColumn,
 	Entity,
+	JoinColumn,
+	ManyToOne,
 	PrimaryGeneratedColumn,
 	UpdateDateColumn
 } from 'typeorm'
+import { Category } from './category.entity'
 export enum StatusType {
 	shelves = 1,
 	unshelve = 0
@@ -20,6 +23,10 @@ export class Goods extends BaseEntity {
 
 	@Column({ comment: '用户id' })
 	userid: string
+
+	@ManyToOne(() => Category, category => category.goods)
+	@JoinColumn({ name: 'cateid' })
+	category: Category
 
 	@Column({ length: 100, comment: '商品名称' })
 	name: string

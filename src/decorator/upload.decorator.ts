@@ -57,6 +57,13 @@ export function ImageMoreUpload(maxCount?: number, field?: string) {
 	})
 }
 
+export function ExcleUpload(filed?: string) {
+	return Upload(filed, {
+		limits: { fieldSize: Math.pow(1024, 2) * 100 },
+		fileFilter: UploadFilter(['application/vnd.ms-excel'])
+	})
+}
+
 export function UploadFile(type: string[], field: string = 'file') {
 	return Upload(field, {
 		fileFilter: UploadFilter(type)

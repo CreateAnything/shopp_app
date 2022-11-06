@@ -1,7 +1,7 @@
-import { Auth } from '@/decorator/auth.decorator'
 import { DefaultResponse, ResponseOk } from '@/decorator/success.decorator'
+import { ExcleUpload } from '@/decorator/upload.decorator'
 import { GetUser } from '@/decorator/user.decorator'
-import { Role, User } from '@/entities/user.entity'
+import { User } from '@/entities/user.entity'
 import {
 	Body,
 	Controller,
@@ -9,16 +9,31 @@ import {
 	Param,
 	Patch,
 	Post,
-	Query
+	Query,
+	Res,
+	UploadedFile
 } from '@nestjs/common'
-import { ApiBearerAuth, ApiOperation, ApiQuery, ApiTags } from '@nestjs/swagger'
-import { CreateGoodsDto, PagingGoodsDto } from './dto/request.dto'
+import {
+	ApiBearerAuth,
+	ApiBody,
+	ApiConsumes,
+	ApiOperation,
+	ApiTags
+} from '@nestjs/swagger'
+import * as ExcelJS from 'exceljs'
+import { Response } from 'express'
+import { FileUploadDto } from '../upload/dto/request.dto'
+import {
+	CreateGoodsDto,
+	ExportGoodsDto,
+	PagingGoodsDto
+} from './dto/request.dto'
 import { ResponsePagingDto } from './dto/response.dto'
 import { GoodsService } from './goods.service'
 @Controller('goods')
 @ApiTags('Goods')
 @ApiBearerAuth('jwt')
-@Auth(Role.COMMON)
+// @Auth(Role.COMMON)
 export class GoodsController {
 	constructor(private readonly goodsService: GoodsService) {}
 	@Post('add')
@@ -58,10 +73,34 @@ export class GoodsController {
 	@Get('search')
 	@ApiOperation({ summary: '分页查询商品' })
 	@ResponseOk({ model: ResponsePagingDto, type: 'object' })
-	@ApiQuery({ name: 'search', type: PagingGoodsDto })
 	async pagingGoods(
 		@Query() query: PagingGoodsDto
 	): Promise<ResponsePagingDto> {
 		return await this.goodsService.SEARCHLIST(query)
+	}
+
+	@Post()
+	@ExcleUpload()
+	@ApiOperation({ summary: '通过exlce批量添加商品' })
+	@ApiConsumes('multipart/form-data')
+	@ApiBody({ description: '请选择文件', type: FileUploadDto })
+	@DefaultResponse()
+	async uploadExcle(@UploadedFile() file: Express.Multer.File): Promise<void> {
+		this.goodsService.UPLOADEXCLE(file)
+	}
+
+	@Get('/export')
+	@ApiOperation({ summary: '批量导出商品信息' })
+	@DefaultResponse()
+	async exportExcel(@Query() query: ExportGoodsDto): Promise<ExcelJS.Buffer> {
+		return await this.goodsService.EXPORTFILE(query)
+	}
+
+	@Get('/download')
+	@ApiOperation({ summary: '下载产品导入模板' })
+	@DefaultResponse()
+	async downFile(@Res() res: Response): Promise<void> {
+		const { path } = await this.goodsService.DOWNFILL()
+		res.download(path)
 	}
 }
