@@ -1,7 +1,8 @@
+import { Auth } from '@/decorator/auth.decorator'
 import { DefaultResponse, ResponseOk } from '@/decorator/success.decorator'
 import { ExcleUpload } from '@/decorator/upload.decorator'
 import { GetUser } from '@/decorator/user.decorator'
-import { User } from '@/entities/user.entity'
+import { Role, User } from '@/entities/user.entity'
 import {
 	Body,
 	Controller,
@@ -33,7 +34,7 @@ import { GoodsService } from './goods.service'
 @Controller('goods')
 @ApiTags('Goods')
 @ApiBearerAuth('jwt')
-// @Auth(Role.COMMON)
+@Auth(Role.COMMON)
 export class GoodsController {
 	constructor(private readonly goodsService: GoodsService) {}
 	@Post('add')
@@ -85,8 +86,11 @@ export class GoodsController {
 	@ApiConsumes('multipart/form-data')
 	@ApiBody({ description: '请选择文件', type: FileUploadDto })
 	@DefaultResponse()
-	async uploadExcle(@UploadedFile() file: Express.Multer.File): Promise<void> {
-		this.goodsService.UPLOADEXCLE(file)
+	async uploadExcle(
+		@UploadedFile() file: Express.Multer.File,
+		@GetUser() user: Record<string, any>
+	): Promise<string> {
+		return await this.goodsService.UPLOADEXCLE(file, user.userid)
 	}
 
 	@Get('/export')

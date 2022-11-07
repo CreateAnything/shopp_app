@@ -1,7 +1,13 @@
 import { GoodsErrCode } from '@/code/index'
 import uploadConfig from '@/config/upload.config'
 import { Goods } from '@/entities/goods.entity'
-import { Inject, Injectable, NotFoundException } from '@nestjs/common'
+import {
+	HttpException,
+	HttpStatus,
+	Inject,
+	Injectable,
+	NotFoundException
+} from '@nestjs/common'
 import { ConfigType } from '@nestjs/config'
 import { InjectRepository } from '@nestjs/typeorm'
 import * as ExcelJS from 'exceljs'
@@ -35,6 +41,19 @@ export class GoodsService {
 		'stock',
 		'status'
 	] as FindOptionsSelectByString<Goods>
+
+	private getColum(length: number, num: number = 0): string[] {
+		let chars: string[] = []
+		for (let i = 0; i < length; i++) {
+			let chart = String.fromCharCode(65 + i)
+			if (num === 0) {
+				chars.push(chart)
+			} else {
+				chars.push(chart.padEnd(2, String(num)))
+			}
+		}
+		return chars
+	}
 
 	async CREATE(CreateGoodsDto: CreateGoodsDto, userid: string): Promise<void> {
 		await this.categoryService.FINDBYID(CreateGoodsDto.cateid)
@@ -88,14 +107,57 @@ export class GoodsService {
 		}
 	}
 
-	async UPLOADEXCLE(file: Express.Multer.File): Promise<void> {
+	private GetCellValue() {
+		const mapKey = {}
+		for (let [index, value] of this.select.entries()) {
+			mapKey[index + 1] = value
+		}
+		return function (
+			target: Record<string, any>,
+			key: number,
+			value: ExcelJS.CellValue
+		) {
+			target[mapKey[key]] = value
+		}
+	}
+	async UPLOADEXCLE(
+		file: Express.Multer.File,
+		userid: string
+	): Promise<string> {
 		const { buffer } = file
 		const workBook = new ExcelJS.Workbook()
 		await workBook.xlsx.load(buffer) //加载buffer文件
 		const worksheet = workBook.getWorksheet(1) //获取excle表格的第一个sheet
+		const MergeCellValue = this.GetCellValue()
+		const result = []
 		worksheet.eachRow((row: ExcelJS.Row, rowNumber: number) => {
-			console.log(row, rowNumber)
-		})
+			//遍历每一行
+			if (rowNumber > 1) {
+				const target = {}
+				row.eachCell((cell: ExcelJS.Cell, colNumber: number) => {
+					MergeCellValue(target, colNumber, cell.value)
+				})
+				target['userid'] = userid
+				result.push(target)
+			} else {
+				//验证模板错误
+				const headerRow = this.getColum(this.select.length)
+				headerRow.forEach((item, index) => {
+					if (this.select[index] !== row.getCell(item).value)
+						throw new HttpException(
+							GoodsErrCode.TemplateErr,
+							HttpStatus.BAD_REQUEST
+						)
+				})
+			}
+		}) //开始导入
+		const res = await this.goodsRepository
+			.createQueryBuilder()
+			.insert()
+			.into(Goods)
+			.values(result)
+			.execute()
+		return res.raw.info
 	}
 
 	async DOWNFILL(): Promise<{ path: string }> {
@@ -131,9 +193,9 @@ export class GoodsService {
 
 	private async CREATEEXCEL(): Promise<void> {
 		const workbook = new ExcelJS.Workbook()
-		const headerRow = ['A1', 'B1', 'C1', 'D1', 'E1', 'F1', 'G1']
 		workbook.addWorksheet('goods')
 		const worksheet = workbook.getWorksheet('goods')
+		const headerRow = this.getColum(this.select.length, 1)
 		worksheet.columns = this.select.map(item => {
 			//设置列
 			return {

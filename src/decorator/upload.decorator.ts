@@ -60,7 +60,10 @@ export function ImageMoreUpload(maxCount?: number, field?: string) {
 export function ExcleUpload(filed?: string) {
 	return Upload(filed, {
 		limits: { fieldSize: Math.pow(1024, 2) * 100 },
-		fileFilter: UploadFilter(['application/vnd.ms-excel'])
+		fileFilter: UploadFilter([
+			'application/vnd.ms-excel',
+			'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+		])
 	})
 }
 

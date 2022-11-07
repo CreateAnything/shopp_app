@@ -3,7 +3,6 @@ import {
 	Column,
 	CreateDateColumn,
 	Entity,
-	JoinColumn,
 	ManyToOne,
 	PrimaryGeneratedColumn,
 	UpdateDateColumn
@@ -25,7 +24,6 @@ export class Goods extends BaseEntity {
 	userid: string
 
 	@ManyToOne(() => Category, category => category.goods)
-	@JoinColumn({ name: 'cateid' })
 	category: Category
 
 	@Column({ length: 100, comment: '商品名称' })
@@ -37,7 +35,7 @@ export class Goods extends BaseEntity {
 	@Column({ length: 500, comment: '商品主图' })
 	mainimage: string
 
-	@Column({ type: 'text', comment: '商品图片' })
+	@Column({ type: 'text', comment: '商品图片', nullable: true })
 	subimages: string
 
 	@Column({ type: 'text', comment: '商品详情', nullable: true })
